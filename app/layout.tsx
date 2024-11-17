@@ -36,7 +36,14 @@ export default function RootLayout({
       <body
         className={`${inter.className} ${spaceGrotesk.variable} antialiased`}
       >
-        <ThemeProvider attribute='class' defaultTheme="system" enableSystem disableTransitionOnChange>{children}</ThemeProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );
