@@ -18,11 +18,6 @@ const SocialAuthForm = () => {
         callbackUrl: ROUTES.HOME,
         redirect: false,
       });
-      // toast({
-      //   title: "Signing in...",
-      //   description: "You are trying to sign in with " + provider,
-      //   variant: "default",
-      // });
     } catch (error) {
       console.log(error);
 
