@@ -12,7 +12,8 @@ const Home = async () => {
         Welcome to the world of Next.js
       </h1>
 
-      <form
+      {/* Adds a logout button on the homepage */}
+      {/* <form
         className="px-10 pt-[100px]"
         action={async () => {
           "use server";
@@ -20,7 +21,7 @@ const Home = async () => {
         }}
       >
         <Button type="submit">Log out</Button>
-      </form>
+      </form> */}
     </>
   );
 };
