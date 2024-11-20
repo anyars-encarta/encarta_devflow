@@ -21,7 +21,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
-import { Span } from "next/dist/trace";
 import ROUTES from "@/constants/routes";
 
 interface AuthFormProps<T extends FieldValues> {
