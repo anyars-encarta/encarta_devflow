@@ -7,9 +7,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
+import { SheetClose } from "../../sheet";
 
 const NavLinks = ({ isMobileNav = false }: { isMobileNav?: boolean }) => {
   const pathname = usePathname();
+  const userId = 24;
 
   return (
     <>
@@ -17,6 +19,11 @@ const NavLinks = ({ isMobileNav = false }: { isMobileNav?: boolean }) => {
         const isActive =
           (pathname.includes(item.route) && item.route.length > 1) ||
           pathname === item.route;
+
+        if (item.route === "/profile") {
+          if (userId) item.route = `${item.route}/${userId}`;
+          else return null;
+        }
 
         const LinkComponent = (
           <Link
@@ -36,11 +43,24 @@ const NavLinks = ({ isMobileNav = false }: { isMobileNav?: boolean }) => {
               height={20}
               className={cn({ "invert-colors": !isActive })}
             />
-            <p className={cn(isActive ? "base-bold" : "base-medium", !isMobileNav && "max-lg:hidden")}>{item.label}</p>
+            <p
+              className={cn(
+                isActive ? "base-bold" : "base-medium",
+                !isMobileNav && "max-lg:hidden"
+              )}
+            >
+              {item.label}
+            </p>
           </Link>
         );
 
-        return LinkComponent;
+        return isMobileNav ? (
+          <SheetClose asChild key={item.label}>
+            {LinkComponent}
+          </SheetClose>
+        ) : (
+          <React.Fragment key={item.label}>{LinkComponent}</React.Fragment>
+        );
       })}
     </>
   );
