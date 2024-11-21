@@ -1,8 +1,10 @@
 import React from 'react'
 
-const Profile = () => {
+const Profile = ({params}: {params: {id: string}}) => {
+  const id = parseInt(params.id);
+
   return (
-    <div>Profile</div>
+    <div>Showing Questions for Profile {id}</div>
   )
 }
 
