@@ -1,5 +1,5 @@
 import TagCard from "@/components/cards/TagCard";
-import { hotQuestions } from "@/constants";
+import { hotQuestions, popularTags } from "@/constants";
 import ROUTES from "@/constants/routes";
 import Image from "next/image";
 import Link from "next/link";
@@ -20,7 +20,11 @@ const RightSidebar = () => {
             >
               <div className="flex items-center gap-3">
                 <Image
-                  src={parseInt(_id) % 2 === 0 ? "/icons/question-blue.svg" : "/icons/question-orange.svg"}
+                  src={
+                    parseInt(_id) % 2 === 0
+                      ? "/icons/question-blue.svg"
+                      : "/icons/question-orange.svg"
+                  }
                   alt="question"
                   width={20}
                   height={20}
@@ -40,10 +44,23 @@ const RightSidebar = () => {
             </Link>
           ))}
         </div>
+      </div>
 
-        <h3 className="h3-bold text-dark200_light900 mt-10">Top Questions</h3>
+      <div className="mt-16">
+        <h3 className="h3-bold text-dark200_light900">Popular Tags</h3>
 
-        <TagCard />
+        <div className="mt-7 flex flex-col gap 4">
+          {popularTags.map(({ _id, name, questions }) => (
+            <TagCard
+              key={_id}
+              _id={_id}
+              name={name}
+              questions={questions}
+              showCount
+              compact
+            />
+          ))}
+        </div>
       </div>
     </section>
   );

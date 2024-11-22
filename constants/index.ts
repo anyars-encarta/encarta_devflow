@@ -63,3 +63,36 @@ export const hotQuestions = [
     description: "I am a beginner and I want to learn Three.js. What is the best way to learn Three.js?", 
   },
 ]
+
+export const popularTags = [
+  {
+    _id: "1",
+    name: "react",
+    questions: 100,
+  },
+  {
+    _id: "2",
+    name: "next.js",
+    questions: 400,
+  },
+  {
+    _id: "3",
+    name: "javascript",
+    questions: 180,
+  },
+  {
+    _id: "4",
+    name: "css",
+    questions: 330,
+  },
+  {
+    _id: "5",
+    name: "html",
+    questions: 248,
+  },
+  {
+    _id: "6",
+    name: "node.js",
+    questions: 157,
+  }
+]
