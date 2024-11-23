@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Input } from "../ui/input";
 import Image from "next/image";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { formUrlQuery, removeKeysFromUrlQuery } from "@/lib/url";
 
 interface LocalSearchProps {
   route: string;
@@ -18,10 +19,38 @@ const LocalSearch = ({
   placeholder,
   otherClasses,
 }: LocalSearchProps) => {
+  const pathname = usePathname();
+  const router = useRouter();
   const searchParams = useSearchParams();
   const query = searchParams.get("query") || "";
 
   const [searchQuery, setSearchQuery] = useState(query);
+
+  useEffect(() => {
+    const delayDeBounceFn = setTimeout(() => {
+      if (searchQuery) {
+        const newUrl = formUrlQuery({
+          params: searchParams.toString(),
+          key: "query",
+          value: searchQuery,
+        });
+  
+        router.push(newUrl, { scroll: false });
+      } else {
+        if (pathname === route) {
+          const newUrl = removeKeysFromUrlQuery({
+            params: searchParams.toString(),
+            keysToRemove: ["query"],
+          });
+  
+          router.push(newUrl, { scroll: false });
+        }
+      }
+    }, 1000);
+
+    return () => clearTimeout(delayDeBounceFn);
+
+  }, [searchQuery, router, route, searchParams, pathname]);
 
   return (
     <div
