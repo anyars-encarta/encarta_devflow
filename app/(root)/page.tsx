@@ -3,7 +3,51 @@ import { Button } from "@/components/ui/button";
 import ROUTES from "@/constants/routes";
 import Link from "next/link";
 import LocalSearch from "@/components/search/LocalSearch";
-const Home = async () => {
+
+const questions = [
+  {
+    _id: "1",
+    title: "What is the best way to learn React?",
+    description:
+      "I am a beginner and I want to learn React. What is the best way to learn React?",
+    tags: [
+      { _id: "1", name: "react" },
+      { _id: "2", name: "javascript" },
+    ],
+    author: {_id: "1", name: "John Doe", avatar: "/images/avatar.png"},
+    upvotes: 36,
+    answers: 12,
+    views: 123,
+    createdAt: new Date(),
+  },
+  {
+    _id: "2",
+    title: "How do I find a job as a developer?",
+    description:
+      "I am a developer and I want to find a job. How do I find a job as a developer?",
+    tags: [
+      { _id: "1", name: "react" },
+      { _id: "2", name: "javascript" },
+    ],
+    author: {_id: "1", name: "Sammy Lee", avatar: "/images/avatar.png"},
+    upvotes: 152,
+    answers: 38,
+    views: 446,
+    createdAt: new Date(),
+  }
+];
+
+interface SearchParams {
+  searchParams: Promise<{ [key: string]: string}>;
+};
+
+const Home = async ({ searchParams }: SearchParams) => {
+const { query = ""} = await searchParams;
+
+const filteredQuestions = questions.filter((question) =>
+  question.title.toLowerCase().includes(query?.toLowerCase())
+);
+
   return (
     <>
       <section className="w-full flex flex-col-reverse sm:flex-row justify-between gap-4 sm:items-center">
@@ -24,13 +68,13 @@ const Home = async () => {
           otherClasses="flex-1"
         />
       </section>
-      HomeFilter
+
+      {/* HomeFilter */}
+
       <div className="mt-10 flex w-full flex-col gap-6">
-        <p>Question Card 1</p>
-        <p>Question Card 2</p>
-        <p>Question Card 3</p>
-        <p>Question Card 4</p>
-        <p>Question Card 5</p>
+        {filteredQuestions.map((question) => (
+          <h1 key={question._id}>{question.title}</h1>
+        ))}
       </div>
     </>
   );
