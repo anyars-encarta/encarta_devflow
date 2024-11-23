@@ -6,7 +6,7 @@ import RightSidebar from "@/components/ui/navigation/RightSidebar";
 
 const RootLayout = ({ children }: { children: ReactNode }) => {
   return (
-    <main className='background-light850_dark100 relative'>
+    <main className="background-light850_dark100 relative">
       <Navbar />
 
       <div className="flex">
