@@ -46,7 +46,7 @@ const LocalSearch = ({
           router.push(newUrl, { scroll: false });
         }
       }
-    }, 1000);
+    }, 300);
 
     return () => clearTimeout(delayDeBounceFn);
 
