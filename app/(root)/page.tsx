@@ -4,6 +4,7 @@ import ROUTES from "@/constants/routes";
 import Link from "next/link";
 import LocalSearch from "@/components/search/LocalSearch";
 import HomeFilter from "@/components/filters/HomeFilter";
+import QuestionCard from "@/components/cards/QuestionCard";
 
 const questions = [
   {
@@ -15,7 +16,7 @@ const questions = [
       { _id: "1", name: "react" },
       { _id: "2", name: "javascript" },
     ],
-    author: { _id: "1", name: "John Doe", avatar: "/images/avatar.png" },
+    author: { _id: "1", name: "John Doe", image: "/images/avatar.png" },
     upvotes: 36,
     answers: 12,
     views: 123,
@@ -30,7 +31,7 @@ const questions = [
       { _id: "1", name: "react" },
       { _id: "2", name: "javascript" },
     ],
-    author: { _id: "1", name: "Sammy Lee", avatar: "/images/avatar.png" },
+    author: { _id: "1", name: "Sammy Lee", image: "/images/avatar.png" },
     upvotes: 152,
     answers: 38,
     views: 446,
@@ -81,7 +82,7 @@ const Home = async ({ searchParams }: SearchParams) => {
 
       <div className="mt-10 flex w-full flex-col gap-6">
         {filteredQuestions.map((question) => (
-          <h1 key={question._id}>{question.title}</h1>
+          <QuestionCard question={question} key={question._id} />
         ))}
       </div>
     </>
