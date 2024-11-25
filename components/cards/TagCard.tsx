@@ -8,7 +8,7 @@ import Link from "next/link";
 interface TagCardProps {
   _id: string;
   name: string;
-  questions: number;
+  questions?: number;
   showCount?: boolean;
   compact?: boolean;
 }
