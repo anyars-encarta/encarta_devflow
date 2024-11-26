@@ -2,7 +2,7 @@
 
 import { AskQuestionSchema } from "@/lib/validations";
 import { zodResolver } from "@hookform/resolvers/zod";
-import React from "react";
+import React, { useRef } from "react";
 import { useForm } from "react-hook-form";
 import {
   Form,
@@ -15,8 +15,18 @@ import {
 } from "../ui/form";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
+import { MDXEditorMethods } from "@mdxeditor/editor";
+import dynamic from "next/dynamic";
+
+// This is the only place InitializedMDXEditor is imported directly.
+const Editor = dynamic(() => import("@/components/editor"), {
+  // Make sure we turn SSR off
+  ssr: false,
+});
 
 const QuestionForm = () => {
+  const editorRef = useRef<MDXEditorMethods>(null);
+
   const form = useForm({
     resolver: zodResolver(AskQuestionSchema),
     defaultValues: {
@@ -66,7 +76,13 @@ const QuestionForm = () => {
                 Detailed explanation of your problem
                 <span className="text-primary-500">*</span>
               </FormLabel>
-              <FormControl>Editor</FormControl>
+              <FormControl>
+                <Editor
+                  value={field.value}
+                  editorRef={editorRef}
+                  fieldChange={field.onChange}
+                />
+              </FormControl>
               <FormDescription className="body-regular text-light-500 mt-2.5">
                 Introduce the problem and expand on what you've put in the title
               </FormDescription>
@@ -90,20 +106,23 @@ const QuestionForm = () => {
                     className="paragraph-regular background-light700_dark300 light-border-2 text-dark300_light700 no-focus min-h-[56px] border"
                     placeholder="Add tags..."
                   />
-
                   Tags
                 </div>
               </FormControl>
               <FormDescription className="body-regular text-light-500 mt-2.5">
-                Add up to 3 tags to describe what your question is about. You need to press enter to add a tag.
+                Add up to 3 tags to describe what your question is about. You
+                need to press enter to add a tag.
               </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
 
-        <div className='mt-16 flex justify-end'>
-          <Button type='submit' className='primary-gradient !text-light-900 w-fit'>
+        <div className="mt-16 flex justify-end">
+          <Button
+            type="submit"
+            className="primary-gradient !text-light-900 w-fit"
+          >
             Ask Question
           </Button>
         </div>
