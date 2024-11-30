@@ -1,10 +1,11 @@
-import { auth, signOut } from "@/auth";
+import Link from "next/link";
+
+// import { auth, signOut } from "@/auth";
+import QuestionCard from "@/components/cards/QuestionCard";
+import HomeFilter from "@/components/filters/HomeFilter";
+import LocalSearch from "@/components/search/LocalSearch";
 import { Button } from "@/components/ui/button";
 import ROUTES from "@/constants/routes";
-import Link from "next/link";
-import LocalSearch from "@/components/search/LocalSearch";
-import HomeFilter from "@/components/filters/HomeFilter";
-import QuestionCard from "@/components/cards/QuestionCard";
 
 const questions = [
   {
@@ -54,12 +55,12 @@ const Home = async ({ searchParams }: SearchParams) => {
       ? question.tags[0].name.toLowerCase() === filter.toLowerCase()
       : true;
 
-      return matchesQuery && matchesFilter
+    return matchesQuery && matchesFilter;
   });
 
   return (
     <>
-      <section className="w-full flex flex-col-reverse sm:flex-row justify-between gap-4 sm:items-center">
+      <section className="flex w-full flex-col-reverse justify-between gap-4 sm:flex-row sm:items-center">
         <h1 className="h1-bold text-dark100_light900">All Questions</h1>
 
         <Button

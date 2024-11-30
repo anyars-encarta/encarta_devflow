@@ -1,7 +1,9 @@
-import ROUTES from "@/constants/routes";
-import { getTimeStamp } from "@/lib/utils";
 import Link from "next/link";
 import React from "react";
+
+import ROUTES from "@/constants/routes";
+import { getTimeStamp } from "@/lib/utils";
+
 import TagCard from "./TagCard";
 import Metric from "../Metric";
 
@@ -33,6 +35,7 @@ const QuestionCard = ({
             <h3 className="sm:h3-semibold base-semibold text-dark200_light900 line-clamp-1 flex-1">
               {title}
             </h3>
+            <p>{description}</p>
           </Link>
         </div>
       </div>
