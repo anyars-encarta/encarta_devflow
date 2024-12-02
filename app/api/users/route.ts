@@ -7,6 +7,7 @@ import dbConnect from "@/lib/mongoose";
 import { UserSchema } from "@/lib/validations";
 import { APIErrorResponse } from "@/types/global";
 
+// Get all users
 export async function GET() {
   try {
     await dbConnect();
