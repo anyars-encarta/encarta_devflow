@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import tickets from "@/app/database";
+import {tickets} from "@/app/database";
 
 // Get By ID // Path: app/api/tickets/[id]/route.ts
 export async function GET(

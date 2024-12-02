@@ -1,4 +1,4 @@
-const tickets = [
+export const tickets = [
     {
         id: 1,
         name: 'Fix Next.js API route bug',
@@ -61,4 +61,29 @@ const tickets = [
     },
 ];
 
-export default tickets;
+export const users = [
+    {
+        id: 1,
+        name: 'John Doe',
+        username: 'johndoe',
+        image: '/images/avatar.png',
+    },
+    {
+        id: 2,
+        name: 'Jane Doe',
+        username: 'janedoe',
+        image: '/images/avatar.png',
+    },
+    {
+        id: 3,
+        name: 'John Doe',
+        username: 'johndoe',
+        image: '/images/avatar.png',
+    },
+    {
+        id: 4,
+        name: 'Jane Doe',
+        username: 'janedoe',
+        image: '/images/avatar.png',
+    },
+]
