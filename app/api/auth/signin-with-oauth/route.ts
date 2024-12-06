@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { NextResponse } from "next/server";
 import slugify from "slugify";
 
 import Account from "@/database/account.model";
@@ -85,6 +86,8 @@ export async function POST(request: Request) {
     }
 
     await session.commitTransaction();
+
+    return NextResponse.json({ success: true });
   } catch (e: unknown) {
     await session.abortTransaction();
     return handleError(e, "api") as APIErrorResponse;
