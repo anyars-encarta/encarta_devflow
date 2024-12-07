@@ -14,7 +14,7 @@ pnpm dev
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result. The app is still under development. Outputs may change during page loads.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result. The app is still under development. Outputs may change during page loads. Final code would be pushed to production.
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
