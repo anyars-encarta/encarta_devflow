@@ -1,7 +1,7 @@
 import React from 'react'
 
 const Profile = ({params}: {params: {id: string}}) => {
-  const id = parseInt(params.id);
+  const id = params.id;
 
   return (
     <div>Showing Questions for Profile {id}</div>
