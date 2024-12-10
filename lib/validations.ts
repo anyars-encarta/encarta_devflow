@@ -162,7 +162,7 @@ export const SignInWithOAuthSchema = z.object({
     }),
     image: z
       .string()
-      .url({ message: "Please provide a valid image URL" })
+      .url("Please provide a valid image URL")
       .optional(),
   }),
 });
