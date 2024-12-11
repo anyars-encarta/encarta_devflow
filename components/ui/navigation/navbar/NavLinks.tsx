@@ -9,9 +9,8 @@ import { usePathname } from "next/navigation";
 import React from "react";
 import { SheetClose } from "../../sheet";
 
-const NavLinks = ({ isMobileNav = false }: { isMobileNav?: boolean }) => {
+const NavLinks = ({ userId, isMobileNav = false }: { userId: string, isMobileNav?: boolean }) => {
   const pathname = usePathname();
-  const userId = 24;
 
   return (
     <>
