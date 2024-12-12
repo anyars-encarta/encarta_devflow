@@ -22,8 +22,6 @@ This project uses [`next/font`](https://nextjs.org/docs/app/building-your-applic
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can
-
 
 ## Learn More
 
