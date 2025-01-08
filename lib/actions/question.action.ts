@@ -3,7 +3,7 @@
 import { ActionResponse, ErrorResponse } from "@/types/global";
 import action from "../handlers/action";
 import handleError from "../handlers/error";
-import { AskQuestionSchema, EditQuestionSchema } from "../validations";
+import { AskQuestionSchema, EditQuestionSchema, GetQuestionSchema } from "../validations";
 import mongoose from "mongoose";
 import Question from "@/database/question.model";
 import Tag, { ITagDoc } from "@/database/tag.model";
@@ -11,7 +11,7 @@ import TagQuestion from "@/database/tag-question.model";
 
 export async function createQuestion(
   params: CreateQuestionParams
-): Promise<ActionResponse<Question>> {
+): Promise<ActionResponse<typeof Question>> {
   const validationResult = await action({
     params,
     schema: AskQuestionSchema,
@@ -76,7 +76,7 @@ export async function createQuestion(
 
 export async function editQuestion(
   params: EditQuestionParams
-): Promise<ActionResponse<Question>> {
+): Promise<ActionResponse<typeof Question>> {
   const validationResult = await action({
     params,
     schema: EditQuestionSchema,
@@ -171,5 +171,33 @@ export async function editQuestion(
     return handleError(e) as ErrorResponse;
   } finally {
     session.endSession();
+  }
+}
+
+export async function getQuestion(
+  params: GetQuestionParams
+): Promise<ActionResponse<typeof Question>> {
+  const validationResult = await action({
+    params,
+    schema: GetQuestionSchema,
+    authorize: true,
+  });
+
+  if (validationResult instanceof Error) {
+    return handleError(validationResult) as ErrorResponse;
+  }
+
+  const { questionId } = validationResult.params!;
+
+  try {
+    const question = await Question.findById(questionId).populate("tags");
+
+    if (!question) {
+      throw new Error("Question not found");
+    }
+
+    return { success: true, data: JSON.parse(JSON.stringify(question)) };
+  } catch (e) {
+    return handleError(e) as ErrorResponse;
   }
 }
