@@ -6,6 +6,7 @@ import { getTimeStamp } from "@/lib/utils";
 
 import TagCard from "./TagCard";
 import Metric from "../Metric";
+import { Question } from "@/types/global";
 
 interface QuestionCardProps {
   question: Question;
@@ -15,7 +16,7 @@ const QuestionCard = ({
   question: {
     _id,
     title,
-    description,
+    content,
     tags,
     author,
     upvotes,
@@ -31,11 +32,11 @@ const QuestionCard = ({
           <span className="subtle-regular text-dark400_light700 line-clamp-1 flex sm:hidden">
             {getTimeStamp(createdAt)}
           </span>
-          <Link href={ROUTES.QUESTION(_id)}>
+          <Link href={ROUTES.QUESTIONS(_id)}>
             <h3 className="sm:h3-semibold base-semibold text-dark200_light900 line-clamp-1 flex-1">
               {title}
             </h3>
-            <p>{description}</p>
+            <p>{content}</p>
           </Link>
         </div>
       </div>
