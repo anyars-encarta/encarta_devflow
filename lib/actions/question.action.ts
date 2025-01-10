@@ -213,7 +213,7 @@ export async function getQuestion(
 
 export async function getQuestions(
   params: PaginatedSearchParams
-): Promise<ActionResponse<{ questions: Question[]; isNext: boolean }>> {
+): Promise<ActionResponse<{ questions: typeof Question[]; isNext: boolean }>> {
   const validationResult = await action({
     params,
     schema: PaginatedSearchParamsSchema,
@@ -262,7 +262,7 @@ export async function getQuestions(
     const totalQuestions = await Question.countDocuments(filterQuery);
     const questions = await Question.find(filterQuery)
       .populate("tags", "name")
-      .populate("author", "name image")
+      // .populate("author", "name image")
       .lean()
       .sort(sortCriteria)
       .skip(skip)
