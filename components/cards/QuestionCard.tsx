@@ -3,10 +3,10 @@ import React from "react";
 
 import ROUTES from "@/constants/routes";
 import { getTimeStamp } from "@/lib/utils";
+import { Question, Tag } from "@/types/global";
 
 import TagCard from "./TagCard";
 import Metric from "../Metric";
-import { Question, Tag } from "@/types/global";
 
 interface QuestionCardProps {
   question: Question;
@@ -49,8 +49,8 @@ const QuestionCard = ({
 
       <div className="flex-between mt-6 w-full flex-wrap gap-3">
         <Metric
-          imgUrl={author.image}
-          alt={author.name}
+          imgUrl={author.image || "/icons/avatar.svg"}
+          alt={author.name || "author"}
           value={author.name}
           title={` • asked ${getTimeStamp(createdAt)}`}
           href={ROUTES.PROFILE(author._id)}

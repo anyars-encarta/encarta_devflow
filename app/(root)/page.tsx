@@ -47,6 +47,7 @@ interface SearchParams {
 
 const Home = async ({ searchParams }: SearchParams) => {
   const { page, pageSize, query, filter } = await searchParams;
+
   const { success, data, error } = await getQuestions({
     page: Number(page) || 1,
     pageSize: Number(pageSize) || 10,
@@ -55,7 +56,6 @@ const Home = async ({ searchParams }: SearchParams) => {
   });
 
   const { questions } = data || {};
-
   // const filteredQuestions = questions.filter((question) => {
   //   const matchesQuery = question.title
   //     .toLowerCase()

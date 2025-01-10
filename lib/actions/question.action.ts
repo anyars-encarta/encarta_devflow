@@ -1,10 +1,16 @@
 "use server";
 
+import mongoose, { FilterQuery } from "mongoose";
+
+import Question, { IQuestionDoc } from "@/database/question.model";
+import TagQuestion from "@/database/tag-question.model";
+import Tag, { ITagDoc } from "@/database/tag.model";
 import {
   ActionResponse,
   ErrorResponse,
   PaginatedSearchParams,
 } from "@/types/global";
+
 import action from "../handlers/action";
 import handleError from "../handlers/error";
 import {
@@ -13,10 +19,6 @@ import {
   GetQuestionSchema,
   PaginatedSearchParamsSchema,
 } from "../validations";
-import mongoose, { FilterQuery } from "mongoose";
-import Question from "@/database/question.model";
-import Tag, { ITagDoc } from "@/database/tag.model";
-import TagQuestion from "@/database/tag-question.model";
 
 export async function createQuestion(
   params: CreateQuestionParams
@@ -85,7 +87,7 @@ export async function createQuestion(
 
 export async function editQuestion(
   params: EditQuestionParams
-): Promise<ActionResponse<typeof Question>> {
+): Promise<ActionResponse<IQuestionDoc>> {
   const validationResult = await action({
     params,
     schema: EditQuestionSchema,
@@ -121,10 +123,15 @@ export async function editQuestion(
     }
 
     const tagsToAdd = tags.filter(
-      (tag) => !question.tags.includes(tag.toLowerCase())
+      (tag) =>
+        !question.tags.some((t: ITagDoc) =>
+          t.name.toLowerCase().includes(tag.toLowerCase())
+        )
     );
+
     const tagsToRemove = question.tags.filter(
-      (tag: ITagDoc) => !tags.includes(tag.name.toLowerCase())
+      (tag: ITagDoc) =>
+        !tags.some((t) => t.toLowerCase() === tag.name.toLowerCase())
     );
 
     const newTagDocuments = [];
@@ -132,7 +139,7 @@ export async function editQuestion(
     if (tagsToAdd.length > 0) {
       for (const tag of tagsToAdd) {
         const existingTag = await Tag.findOneAndUpdate(
-          { name: { $regex: new RegExp(`^${tag}$`, "i") } },
+          { name: { $regex: `^${tag}$`, $options: "i" } },
           { $setOnInsert: { name: tag }, $inc: { questions: 1 } },
           { upsert: true, new: true, session }
         );
@@ -163,7 +170,10 @@ export async function editQuestion(
       );
 
       question.tags = question.tags.filter(
-        (tagId: mongoose.Types.ObjectId) => !tagIdsToRemove.includes(tagId)
+        (tag: mongoose.Types.ObjectId) =>
+          !tagIdsToRemove.some((id: mongoose.Types.ObjectId) =>
+            id.equals(tag._id)
+          )
       );
     }
 
@@ -213,7 +223,7 @@ export async function getQuestion(
 
 export async function getQuestions(
   params: PaginatedSearchParams
-): Promise<ActionResponse<{ questions: typeof Question[]; isNext: boolean }>> {
+): Promise<ActionResponse<{ questions: Question[]; isNext: boolean }>> {
   const validationResult = await action({
     params,
     schema: PaginatedSearchParamsSchema,
@@ -268,10 +278,13 @@ export async function getQuestions(
       .skip(skip)
       .limit(limit);
 
-      const isNext = totalQuestions > skip + questions.length;
+    const isNext = totalQuestions > skip + questions.length;
 
-    return { success: true, data: { questions: JSON.parse(JSON.stringify(questions)), isNext } };
+    return {
+      success: true,
+      data: { questions: JSON.parse(JSON.stringify(questions)), isNext },
+    };
   } catch (e) {
     return handleError(e) as ErrorResponse;
-  } 
+  }
 }
