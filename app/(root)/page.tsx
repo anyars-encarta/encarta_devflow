@@ -6,57 +6,66 @@ import HomeFilter from "@/components/filters/HomeFilter";
 import LocalSearch from "@/components/search/LocalSearch";
 import { Button } from "@/components/ui/button";
 import ROUTES from "@/constants/routes";
+import { getQuestions } from "@/lib/actions/question.action";
 
-const questions = [
-  {
-    _id: "1",
-    title: "What is the best way to learn React?",
-    description:
-      "I am a beginner and I want to learn React. What is the best way to learn React?",
-    tags: [
-      { _id: "1", name: "react" },
-      { _id: "2", name: "javascript" },
-    ],
-    author: { _id: "1", name: "John Doe", image: "/images/avatar.png" },
-    upvotes: 36,
-    answers: 12,
-    views: 123,
-    createdAt: new Date(),
-  },
-  {
-    _id: "2",
-    title: "How do I find a job as a developer?",
-    description:
-      "I am a developer and I want to find a job. How do I find a job as a developer?",
-    tags: [
-      { _id: "1", name: "react" },
-      { _id: "2", name: "javascript" },
-    ],
-    author: { _id: "1", name: "Sammy Lee", image: "/images/avatar.png" },
-    upvotes: 152,
-    answers: 38,
-    views: 446,
-    createdAt: new Date(),
-  },
-];
+// const questions = [
+//   {
+//     _id: "1",
+//     title: "What is the best way to learn React?",
+//     content:
+//       "I am a beginner and I want to learn React. What is the best way to learn React?",
+//     tags: [
+//       { _id: "1", name: "react" },
+//       { _id: "2", name: "javascript" },
+//     ],
+//     author: { _id: "1", name: "John Doe", image: "/images/avatar.png" },
+//     upvotes: 36,
+//     answers: 12,
+//     views: 123,
+//     createdAt: new Date(),
+//   },
+//   {
+//     _id: "2",
+//     title: "How do I find a job as a developer?",
+//     content:
+//       "I am a developer and I want to find a job. How do I find a job as a developer?",
+//     tags: [
+//       { _id: "1", name: "react" },
+//       { _id: "2", name: "javascript" },
+//     ],
+//     author: { _id: "1", name: "Sammy Lee", image: "/images/avatar.png" },
+//     upvotes: 152,
+//     answers: 38,
+//     views: 446,
+//     createdAt: new Date(),
+//   },
+// ];
 
 interface SearchParams {
   searchParams: Promise<{ [key: string]: string }>;
 }
 
 const Home = async ({ searchParams }: SearchParams) => {
-    const { query = "", filter = "" } = await searchParams;
+  const { page, pageSize, query, filter } = await searchParams;
 
-  const filteredQuestions = questions.filter((question) => {
-    const matchesQuery = question.title
-      .toLowerCase()
-      .includes(query?.toLowerCase());
-    const matchesFilter = filter
-      ? question.tags[0].name.toLowerCase() === filter.toLowerCase()
-      : true;
-
-    return matchesQuery && matchesFilter;
+  const { success, data, error } = await getQuestions({
+    page: Number(page) || 1,
+    pageSize: Number(pageSize) || 10,
+    query: query || "",
+    filter: filter || "",
   });
+
+  const { questions } = data || {};
+  // const filteredQuestions = questions.filter((question) => {
+  //   const matchesQuery = question.title
+  //     .toLowerCase()
+  //     .includes(query?.toLowerCase());
+  //   const matchesFilter = filter
+  //     ? question.tags[0].name.toLowerCase() === filter.toLowerCase()
+  //     : true;
+
+  //   return matchesQuery && matchesFilter;
+  // });
 
   return (
     <>
@@ -81,11 +90,25 @@ const Home = async ({ searchParams }: SearchParams) => {
 
       <HomeFilter />
 
-      <div className="mt-10 flex w-full flex-col gap-6">
-        {filteredQuestions.map((question) => (
-          <QuestionCard question={question} key={question._id} />
-        ))}
-      </div>
+      {success ? (
+        <div className="mt-10 flex w-full flex-col gap-6">
+          {questions && questions.length > 0 ? (
+            questions.map((question) => (
+              <QuestionCard question={question} key={question._id} />
+            ))
+          ) : (
+            <div className="mt-10 flex w-full items-center justify-center">
+              <p className="text-dark400_light700">No questions found</p>
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className="mt-10 flex w-full items-center justify-center">
+          <p className="text-dark400_light700">
+            {error?.message || "Failed to fetch questions"}
+          </p>
+        </div>
+      )}
     </>
   );
 };
