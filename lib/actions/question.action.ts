@@ -272,7 +272,7 @@ export async function getQuestions(
     const totalQuestions = await Question.countDocuments(filterQuery);
     const questions = await Question.find(filterQuery)
       .populate("tags", "name")
-      // .populate("author", "name image")
+      .populate("author", "name image")
       .lean()
       .sort(sortCriteria)
       .skip(skip)
