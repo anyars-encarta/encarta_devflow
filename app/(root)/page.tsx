@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import ROUTES from "@/constants/routes";
 import { EMPTY_QUESTION } from "@/constants/states";
 import { getQuestions } from "@/lib/actions/question.action";
-import { Divide } from "lucide-react";
 
 // const questions = [
 //   {
@@ -100,7 +99,10 @@ const Home = async ({ searchParams }: SearchParams) => {
         empty={EMPTY_QUESTION}
         render={(questions) =>
           questions.map((question) => (
-            <div className="mt-10 flex w-full flex-col gap-6" key={question._id}>
+            <div
+              className="mt-10 flex w-full flex-col gap-6"
+              key={question._id}
+            >
               <QuestionCard question={question} />
             </div>
           ))
