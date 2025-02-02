@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 interface MetricProps {
   imgUrl: string;
   alt: string;
-  value: number | string;
+  value: number | string | undefined;
   title: string;
   href?: string;
   textStyles?: string;
