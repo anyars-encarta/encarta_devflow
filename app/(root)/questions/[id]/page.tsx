@@ -5,6 +5,7 @@ import React from "react";
 
 import TagCard from "@/components/cards/TagCard";
 import Preview from "@/components/editor/Preview";
+import AnswerForm from "@/components/forms/AnswerForm";
 import Metric from "@/components/Metric";
 import UserAvatar from "@/components/UserAvatar";
 import ROUTES from "@/constants/routes";
@@ -12,7 +13,6 @@ import { getQuestion, incrementViews } from "@/lib/actions/question.action";
 import { formatNumber, getTimeStamp } from "@/lib/utils";
 import { RouteParams } from "@/types/global";
 // import View from "../View"; // imported for First approach for incrementing views
-
 
 // const sampleQuestion = {
 //   id: "q123",
@@ -90,11 +90,9 @@ const QuestionDetails = async ({ params }: RouteParams) => {
     await incrementViews({ questionId: id }); // Second approach for incrementing views
   });
 
-
   if (!success || !question) return redirect("/404");
   
   const { author, createdAt, answers, views, tags, content, title } = question;
-
 
   return (
     <>
@@ -160,6 +158,10 @@ const QuestionDetails = async ({ params }: RouteParams) => {
           <TagCard key={tag._id} _id={tag._id as string} name={tag.name} compact />
         ))}
       </div>
+
+      <section className='my-5'>
+        <AnswerForm />
+      </section>
     </>
   );
 };
