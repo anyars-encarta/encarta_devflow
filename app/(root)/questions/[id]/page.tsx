@@ -7,11 +7,11 @@ import Preview from "@/components/editor/Preview";
 import Metric from "@/components/Metric";
 import UserAvatar from "@/components/UserAvatar";
 import ROUTES from "@/constants/routes";
-import { getQuestion } from "@/lib/actions/question.action";
+import { getQuestion, incrementViews } from "@/lib/actions/question.action";
 import { formatNumber, getTimeStamp } from "@/lib/utils";
 import { RouteParams } from "@/types/global";
 
-import View from "../View";
+// import View from "../View"; // imported for First approach for incrementing views
 
 
 // const sampleQuestion = {
@@ -85,17 +85,19 @@ import View from "../View";
 const QuestionDetails = async ({ params }: RouteParams) => {
   const { id } = await params;
   
-  const {success, data: question} = await getQuestion({ questionId: id });
-  
+  const [_, {success, data: question}] = await Promise.all([
+    await incrementViews({ questionId: id }), // Second approach for incrementing views
+    await getQuestion({ questionId: id }),
+  ])
+
   if (!success || !question) return redirect("/404");
   
   const { author, createdAt, answers, views, tags, content, title } = question;
 
-  console.log("Question: ", question);
 
   return (
     <>
-      <View questionId={id} />
+      {/* <View questionId={id} />  First approach for incrementing views */}
       <div className='flex-start w-full flex-col'>
         <div className='flex w-full flex-col-reverse'>
           <div className='flex items-center justify-start'>
