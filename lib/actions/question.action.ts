@@ -1,7 +1,9 @@
 "use server";
 
 import mongoose, { FilterQuery } from "mongoose";
+import { revalidatePath } from "next/cache";
 
+import ROUTES from "@/constants/routes";
 import Question, { IQuestionDoc } from "@/database/question.model";
 import TagQuestion from "@/database/tag-question.model";
 import Tag, { ITagDoc } from "@/database/tag.model";
@@ -20,8 +22,6 @@ import {
   IncrementViewsSchema,
   PaginatedSearchParamsSchema,
 } from "../validations";
-import { revalidatePath } from "next/cache";
-import ROUTES from "@/constants/routes";
 
 export async function createQuestion(
   params: CreateQuestionParams
