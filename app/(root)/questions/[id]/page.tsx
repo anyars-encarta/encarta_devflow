@@ -10,6 +10,8 @@ import ROUTES from "@/constants/routes";
 import { getQuestion } from "@/lib/actions/question.action";
 import { formatNumber, getTimeStamp } from "@/lib/utils";
 import { RouteParams } from "@/types/global";
+import View from "../View";
+
 
 // const sampleQuestion = {
 //   id: "q123",
@@ -88,10 +90,11 @@ const QuestionDetails = async ({ params }: RouteParams) => {
   
   const { author, createdAt, answers, views, tags, content, title } = question;
 
-  console.log("Author: ", author);
+  console.log("Question: ", question);
 
   return (
     <>
+      <View questionId={id} />
       <div className='flex-start w-full flex-col'>
         <div className='flex w-full flex-col-reverse'>
           <div className='flex items-center justify-start'>
@@ -132,7 +135,7 @@ const QuestionDetails = async ({ params }: RouteParams) => {
         <Metric 
           imgUrl="/icons/message.svg"
           alt="Message icon"
-          value={answers}
+          value={formatNumber(answers)}
           title=""
           textStyles="small-regular text-dark400_light700"
         />
