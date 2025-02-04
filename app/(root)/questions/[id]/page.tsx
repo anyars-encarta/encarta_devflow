@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { after } from "next/server";
 import React from "react";
 
 import TagCard from "@/components/cards/TagCard";
@@ -7,9 +8,11 @@ import Preview from "@/components/editor/Preview";
 import Metric from "@/components/Metric";
 import UserAvatar from "@/components/UserAvatar";
 import ROUTES from "@/constants/routes";
-import { getQuestion } from "@/lib/actions/question.action";
+import { getQuestion, incrementViews } from "@/lib/actions/question.action";
 import { formatNumber, getTimeStamp } from "@/lib/utils";
 import { RouteParams } from "@/types/global";
+// import View from "../View"; // imported for First approach for incrementing views
+
 
 // const sampleQuestion = {
 //   id: "q123",
@@ -81,17 +84,21 @@ import { RouteParams } from "@/types/global";
 
 const QuestionDetails = async ({ params }: RouteParams) => {
   const { id } = await params;
-  
-  const {success, data: question} = await getQuestion({ questionId: id });
-  
+  const { success, data: question } =  await getQuestion({ questionId: id });
+
+  after(async () => {
+    await incrementViews({ questionId: id }); // Second approach for incrementing views
+  });
+
+
   if (!success || !question) return redirect("/404");
   
   const { author, createdAt, answers, views, tags, content, title } = question;
 
-  console.log("Author: ", author);
 
   return (
     <>
+      {/* <View questionId={id} />  First approach for incrementing views */}
       <div className='flex-start w-full flex-col'>
         <div className='flex w-full flex-col-reverse'>
           <div className='flex items-center justify-start'>
@@ -132,7 +139,7 @@ const QuestionDetails = async ({ params }: RouteParams) => {
         <Metric 
           imgUrl="/icons/message.svg"
           alt="Message icon"
-          value={answers}
+          value={formatNumber(answers)}
           title=""
           textStyles="small-regular text-dark400_light700"
         />
