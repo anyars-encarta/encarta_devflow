@@ -1,11 +1,11 @@
+import { EMPTY_ANSWERS } from "@/constants/states";
 import { ActionResponse, Answer } from "@/types/global";
 
-import DataRenderer from "../DataRenderer";
-import { EMPTY_ANSWERS } from "@/constants/states";
 import AnswerCard from "../cards/AnswerCard";
+import DataRenderer from "../DataRenderer";
 
 interface Props extends ActionResponse<Answer[]> {
-  totalAnsers: number;
+  totalAnswers: number;
 }
 
 const AllAnswers = ({ data, success, error, totalAnswers }: Props) => {
