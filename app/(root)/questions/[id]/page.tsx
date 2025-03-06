@@ -13,6 +13,7 @@ import { getAnswers } from "@/lib/actions/answer.action";
 import { getQuestion, incrementViews } from "@/lib/actions/question.action";
 import { formatNumber, getTimeStamp } from "@/lib/utils";
 import { RouteParams } from "@/types/global";
+import AllAnswers from "@/components/answers/AllAnswers";
 
 // import View from "../View"; // imported for First approach for incrementing views
 
@@ -105,8 +106,6 @@ const QuestionDetails = async ({ params }: RouteParams) => {
     filter: "latest",
   });
 
-  console.log("ANSWERS", answersResult);
-  
   const { author, createdAt, answers, views, tags, content, title } = question;
 
   return (
@@ -178,6 +177,15 @@ const QuestionDetails = async ({ params }: RouteParams) => {
           />
         ))}
       </div>
+
+      <section className="my-5">
+        <AllAnswers 
+          data={answersResult?.answers}
+          success={areAnswersLoaded}
+          error={answersError}
+          totalAnswers={answersResult?.totalAnswers || 0}
+        />
+      </section>
 
       <section className="my-5">
         <AnswerForm questionId={question._id} />
