@@ -9,9 +9,11 @@ import AnswerForm from "@/components/forms/AnswerForm";
 import Metric from "@/components/Metric";
 import UserAvatar from "@/components/UserAvatar";
 import ROUTES from "@/constants/routes";
+import { getAnswers } from "@/lib/actions/answer.action";
 import { getQuestion, incrementViews } from "@/lib/actions/question.action";
 import { formatNumber, getTimeStamp } from "@/lib/utils";
 import { RouteParams } from "@/types/global";
+
 // import View from "../View"; // imported for First approach for incrementing views
 
 // const sampleQuestion = {
@@ -84,32 +86,45 @@ import { RouteParams } from "@/types/global";
 
 const QuestionDetails = async ({ params }: RouteParams) => {
   const { id } = await params;
-  const { success, data: question } =  await getQuestion({ questionId: id });
+  const { success, data: question } = await getQuestion({ questionId: id });
 
   after(async () => {
     await incrementViews({ questionId: id }); // Second approach for incrementing views
   });
 
   if (!success || !question) return redirect("/404");
+
+  const {
+    success: areAnswersLoaded,
+    data: answersResult,
+    error: answersError,
+  } = await getAnswers({
+    questionId: id,
+    page: 1,
+    pageSize: 10,
+    filter: "latest",
+  });
+
+  console.log("ANSWERS", answersResult);
   
   const { author, createdAt, answers, views, tags, content, title } = question;
 
   return (
     <>
       {/* <View questionId={id} />  First approach for incrementing views */}
-      <div className='flex-start w-full flex-col'>
-        <div className='flex w-full flex-col-reverse'>
-          <div className='flex items-center justify-start'>
-            <UserAvatar 
-              id={author._id} 
-              name={author.name} 
-              imageUrl={author.image} 
-              className='size-[22px]'
+      <div className="flex-start w-full flex-col">
+        <div className="flex w-full flex-col-reverse">
+          <div className="flex items-center justify-start">
+            <UserAvatar
+              id={author._id}
+              name={author.name}
+              imageUrl={author.image}
+              className="size-[22px]"
               fallbackClassName="text-[10px]"
             />
 
             <Link href={ROUTES.PROFILE(author._id.toString())}>
-              <p className='paragraph-semibold text-dark300_light700 ml-2'>
+              <p className="paragraph-semibold text-dark300_light700 ml-2">
                 {author.name}
               </p>
             </Link>
@@ -126,15 +141,15 @@ const QuestionDetails = async ({ params }: RouteParams) => {
       </div>
 
       <div className="mb-8 mt-5 flex flex-wrap gap-4">
-        <Metric 
+        <Metric
           imgUrl="/icons/clock.svg"
           alt="Clock icon"
           value={` asked ${getTimeStamp(new Date(createdAt))}`}
           title=""
           textStyles="small-regular text-dark400_light700"
         />
-        
-        <Metric 
+
+        <Metric
           imgUrl="/icons/message.svg"
           alt="Message icon"
           value={formatNumber(answers)}
@@ -142,7 +157,7 @@ const QuestionDetails = async ({ params }: RouteParams) => {
           textStyles="small-regular text-dark400_light700"
         />
 
-        <Metric 
+        <Metric
           imgUrl="/icons/eye.svg"
           alt="View icon"
           value={formatNumber(views)}
@@ -155,11 +170,16 @@ const QuestionDetails = async ({ params }: RouteParams) => {
 
       <div className="mt-8 flex flex-wrap gap-2">
         {tags.map((tag) => (
-          <TagCard key={tag._id} _id={tag._id as string} name={tag.name} compact />
+          <TagCard
+            key={tag._id}
+            _id={tag._id as string}
+            name={tag.name}
+            compact
+          />
         ))}
       </div>
 
-      <section className='my-5'>
+      <section className="my-5">
         <AnswerForm questionId={question._id} />
       </section>
     </>
