@@ -36,6 +36,15 @@ export const EMPTY_TAGS = {
     },
 };
 
+export const EMPTY_ANSWERS = {
+    title: 'No Answers Found',
+    message: "The board is empty. Make it rain with your brillianr answer.",
+    // button: {
+    //     text: 'Answer',
+    //     href: ROUTES.HOME
+    // },
+};
+
 export const EMPTY_COLLECTION = {
     title: 'Collections Are Empty',
     message: "Looks like you havent created any collections yet. Start curating something extra ordinary today.",

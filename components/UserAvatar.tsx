@@ -23,8 +23,7 @@ const UserAvatar = ({
   className = "h-9 w-9",
   fallbackClassName,
 }: UserAvatarProps) => {
-  const initials = name
-    .split(" ")
+  const initials = name?.split(" ")
     .map((word: string) => word[0])
     .join("")
     .toUpperCase()
@@ -39,7 +38,7 @@ const UserAvatar = ({
             width={36}
             height={36}
             quality={100}
-            alt={name}
+            alt={name || "Anonymous"}
             className="object-cover"
           />
         ) : (
