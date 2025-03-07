@@ -20,9 +20,8 @@ import {
 } from "@/components/ui/form";
 import { toast } from "@/hooks/use-toast";
 import { createAnswer } from "@/lib/actions/answer.action";
-import { AnswerSchema } from "@/lib/validations";
-import { set } from "mongoose";
 import { api } from "@/lib/api";
+import { AnswerSchema } from "@/lib/validations";
 
 
 // This is the only place InitializedMDXEditor is imported directly.
@@ -89,10 +88,12 @@ const AnswerForm = ({ questionId, questionTitle, questionContent }: Props) => {
 
     setIsAiSubmitting(true);
 
+    const userAnswer = editorRef.current?.getMarkdown();
     try {
       const { success, data, error } = await api.ai.getAnswer(
         questionTitle, 
-        questionContent
+        questionContent,
+        userAnswer,
       );
 
       if (!success) {
