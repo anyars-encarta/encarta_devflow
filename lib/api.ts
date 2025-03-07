@@ -2,10 +2,10 @@ import ROUTES from "@/constants/routes";
 import { IAccount } from "@/database/account.model";
 import { IUser } from "@/database/user.model";
 import { SignInWithOAuthParams } from "@/types/action";
-
-import { fetchHandler } from "./handlers/fetch";
-import { getAnswers } from "./actions/answer.action";
 import { APIResponse } from "@/types/global";
+
+import { getAnswers } from "./actions/answer.action";
+import { fetchHandler } from "./handlers/fetch";
 
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3000/api";
