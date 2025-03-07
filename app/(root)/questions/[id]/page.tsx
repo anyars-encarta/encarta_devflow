@@ -14,6 +14,7 @@ import { getAnswers } from "@/lib/actions/answer.action";
 import { getQuestion, incrementViews } from "@/lib/actions/question.action";
 import { formatNumber, getTimeStamp } from "@/lib/utils";
 import { RouteParams } from "@/types/global";
+import Votes from "@/components/votes/Votes";
 
 // import View from "../View"; // imported for First approach for incrementing views
 
@@ -130,7 +131,12 @@ const QuestionDetails = async ({ params }: RouteParams) => {
           </div>
 
           <div className="flex justify-end">
-            <p>Votes</p>
+            <Votes
+              upvotes={question.upvotes}
+              hasUpvoted={true}
+              downvotes={question.downvotes}
+              hasDownvoted={false}
+            />
           </div>
         </div>
 
