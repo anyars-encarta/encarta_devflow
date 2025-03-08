@@ -1,7 +1,9 @@
 "use server";
 
 import mongoose, { ClientSession } from "mongoose";
+import { revalidatePath } from "next/cache";
 
+import ROUTES from "@/constants/routes";
 import { Answer, Question, Vote } from "@/database";
 import {
   CreateVoteParams,
@@ -18,7 +20,7 @@ import {
   UpdateVoteCountSchema,
 } from "../validations";
 
-async function updateVoteCount(
+export async function updateVoteCount(
   params: UpdateVoteCountParams,
   session?: ClientSession
 ): Promise<ActionResponse> {
@@ -34,12 +36,12 @@ async function updateVoteCount(
   const { targetId, targetType, voteType, change } = validationResult.params!;
 
   const Model = targetType === "question" ? Question : Answer;
-  const votoField = voteType === "upvote" ? "upvotes" : "downvotes";
+  const voteField = voteType === "upvote" ? "upvotes" : "downvotes";
 
   try {
     const result = await Model.findByIdAndUpdate(
       targetId,
-      { $inc: { [votoField]: change } },
+      { $inc: { [voteField]: change } },
       { new: true, session }
     );
 
@@ -55,7 +57,7 @@ async function updateVoteCount(
   }
 }
 
-async function createVote(params: CreateVoteParams): Promise<ActionResponse> {
+export async function createVote(params: CreateVoteParams): Promise<ActionResponse> {
   const validationResult = await action({
     params,
     schema: CreateVoteSchema,
@@ -75,22 +77,22 @@ async function createVote(params: CreateVoteParams): Promise<ActionResponse> {
   session.startTransaction();
 
   try {
-    const exisitingVote = Vote.findOne({
+    const existingVote = Vote.findOne({
       author: userId,
-      actionid: targetId,
+      actionId: targetId,
       actionType: targetType,
     }).session(session);
 
-    if (exisitingVote) {
-      if (exisitingVote.voteType === voteType) {
-        await Vote.deleteOne({ _id: exisitingVote._id }).session(session);
+    if (existingVote) {
+      if (existingVote.voteType === voteType) {
+        await Vote.deleteOne({ _id: existingVote._id }).session(session);
         await updateVoteCount(
           { targetId, targetType, voteType, change: -1 },
           session
         );
       } else {
         await Vote.findByIdAndUpdate(
-          exisitingVote._id,
+          existingVote._id,
           { voteType },
           { new: true, session }
         );
@@ -100,7 +102,12 @@ async function createVote(params: CreateVoteParams): Promise<ActionResponse> {
         );
       }
     } else {
-      await Vote.create([{ targetId, targetType, voteType, change: 1 }], {
+      await Vote.create([{
+        author: userId,
+        actionId: targetId, 
+        actionType: targetType, 
+        voteType, 
+      }], {
         session,
       });
       await updateVoteCount(
@@ -111,6 +118,9 @@ async function createVote(params: CreateVoteParams): Promise<ActionResponse> {
 
     await session.commitTransaction();
     session.endSession();
+
+    revalidatePath(ROUTES.QUESTIONS(targetId));
+
     return { success: true };
   } catch (e) {
     await session.abortTransaction();
@@ -140,22 +150,22 @@ export async function hasVoted(
   try {
     const vote = await Vote.findOne({
       author: userId,
-      actionid: targetId,
+      actionId: targetId,
       actionType: targetType,
     });
 
     if (!vote) {
       return {
         success: false,
-        data: { HasUpvoted: false, HasDownvoted: false },
+        data: { hasUpvoted: false, hasDownvoted: false },
       };
     }
 
     return {
       success: true,
       data: {
-        HasUpvoted: vote.voteType === "upvote",
-        HasDownvoted: vote.voteType === "downvote",
+        hasUpvoted: vote.voteType === "upvote",
+        hasDownvoted: vote.voteType === "downvote",
       },
     };
   } catch (e) {
