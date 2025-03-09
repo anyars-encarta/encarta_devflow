@@ -42,7 +42,7 @@ export async function toggleSaveQuestion(
       return {
         success: true,
         data: { 
-            save: false,
+            saved: false,
         },
       };
     }
@@ -57,7 +57,7 @@ export async function toggleSaveQuestion(
     return {
       success: true,
       data: { 
-          save: true,
+          saved: true,
       },
     };
   } catch (e) {
