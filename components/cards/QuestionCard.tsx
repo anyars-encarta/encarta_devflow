@@ -65,7 +65,7 @@ const QuestionCard = ({
             imgUrl="/icons/like.svg"
             alt="like"
             value={upvotes}
-            title=" Votes"
+            title={upvotes === 1 ? "Vote" : "Votes"}
             textStyles="small-medium text-dark400_light800"
             imgStyles=""
           />
@@ -74,7 +74,7 @@ const QuestionCard = ({
             imgUrl="/icons/message.svg"
             alt="answers"
             value={answers}
-            title=" Answers"
+            title={answers === 1 ? "Answer" : "Answers"}
             textStyles="small-medium text-dark400_light800"
             imgStyles=""
           />
@@ -83,7 +83,7 @@ const QuestionCard = ({
             imgUrl="/icons/eye.svg"
             alt="views"
             value={views}
-            title=" Views"
+            title={views === 1 ? "View" : "Views"}
             textStyles="small-medium text-dark400_light800"
             imgStyles=""
           />
