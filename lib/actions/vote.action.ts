@@ -77,7 +77,7 @@ export async function createVote(params: CreateVoteParams): Promise<ActionRespon
   session.startTransaction();
 
   try {
-    const existingVote = Vote.findOne({
+    const existingVote = await Vote.findOne({
       author: userId,
       actionId: targetId,
       actionType: targetType,

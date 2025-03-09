@@ -1,14 +1,29 @@
 import Link from "next/link";
+import { Suspense } from "react";
 
 import ROUTES from "@/constants/routes";
+import { hasVoted } from "@/lib/actions/vote.action";
 import { getTimeStamp } from "@/lib/utils";
 import { Answer } from "@/types/global";
 
 import Preview from "../editor/Preview";
 import UserAvatar from "../UserAvatar";
+import Votes from "../votes/Votes";
 
-const AnswerCard = ({ _id, author, content, createdAt }: Answer) => {
-  console.log("The date is: ", createdAt);
+const AnswerCard = ({
+  _id,
+  author,
+  content,
+  upvotes,
+  downvotes,
+  createdAt,
+}: Answer) => {
+  const hasVotedPromise = hasVoted({
+    targetId: _id,
+    targetType: "answer",
+    voteType: "upvote",
+  });
+
   return (
     <article className="light-border border-b py-10">
       <span id={JSON.stringify(_id)} className="hash-span" />
@@ -30,15 +45,23 @@ const AnswerCard = ({ _id, author, content, createdAt }: Answer) => {
               {author.name ?? "Anonymous"}
             </p>
 
-            <p className='small-regular text-light400_light500 ml-0.5 mt-0.5 line-clamp-1'>
-                <span className='max-sm:hidden'>•</span>
-                asnwered {' '} {getTimeStamp(createdAt)}
+            <p className="small-regular text-light400_light500 ml-0.5 mt-0.5 line-clamp-1">
+              <span className="max-sm:hidden">•</span>
+              asnwered {getTimeStamp(createdAt)}
             </p>
           </Link>
         </div>
 
-        <div className='flex justify-end'>
-            Votes
+        <div className="flex justify-end">
+          <Suspense fallback={<div>Loading...</div>}>
+            <Votes
+              targetType="answer"
+              targetId={_id}
+              hasVotedPromise={hasVotedPromise}
+              upvotes={upvotes}
+              downvotes={downvotes}
+            />
+          </Suspense>
         </div>
       </div>
 
