@@ -18,6 +18,7 @@ import { formatNumber, getTimeStamp } from "@/lib/utils";
 import { RouteParams } from "@/types/global";
 import { Save } from "lucide-react";
 import SaveQuestion from "@/components/questions/SaveQuestion";
+import { hasSavedQuestion } from "@/lib/actions/collection.action";
 
 // import View from "../View"; // imported for First approach for incrementing views
 
@@ -116,6 +117,10 @@ const QuestionDetails = async ({ params }: RouteParams) => {
     voteType: "upvote", // or "downvote" depending on the context
   });
 
+  const hasSavedQuestionPromise = hasSavedQuestion({
+    questionId: question._id as string,
+  });
+
   const { author, createdAt, answers, views, tags, content, title } = question;
 
   return (
@@ -139,7 +144,7 @@ const QuestionDetails = async ({ params }: RouteParams) => {
             </Link>
           </div>
 
-          <div className="flex justify-end">
+          <div className="flex items-center justify-end gap-4">
             <Suspense fallback={<div>Loading...</div>}>
               <Votes
                 targetType="question"
@@ -151,7 +156,10 @@ const QuestionDetails = async ({ params }: RouteParams) => {
             </Suspense>
 
             <Suspense fallback={<div>Loading...</div>}>
-              <SaveQuestion questionId={question._id as string} />
+              <SaveQuestion
+                questionId={question._id as string}
+                hasSavedQuestionPromise={hasSavedQuestionPromise}
+              />
             </Suspense>
           </div>
         </div>

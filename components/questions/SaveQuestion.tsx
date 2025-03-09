@@ -2,17 +2,26 @@
 
 import Image from "next/image";
 import { useSession } from "next-auth/react";
-import { useState } from "react";
+import { use, useState } from "react";
 
 import { toast } from "@/hooks/use-toast";
 import { toggleSaveQuestion } from "@/lib/actions/collection.action";
+import { ActionResponse } from "@/types/global";
 
-const SaveQuestion = ({ questionId }: { questionId: string }) => {
+const SaveQuestion = ({
+  questionId,
+  hasSavedQuestionPromise,
+}: {
+  questionId: string;
+  hasSavedQuestionPromise: Promise<ActionResponse<{ save: boolean }>>;
+}) => {
   const session = useSession();
   const userId = session.data?.user?.id;
 
+  const { data } = use(hasSavedQuestionPromise);
+  const { saved: hasSaved } = data ?? {};
+
   const [isLoading, setIsLoading] = useState(false);
-  const [hasSaved, setHasSaved] = useState(false);
 
   const handleSave = async () => {
     if (isLoading) return;
@@ -30,7 +39,6 @@ const SaveQuestion = ({ questionId }: { questionId: string }) => {
       const { success, data, error } = await toggleSaveQuestion({ questionId });
 
       if (success) {
-        setHasSaved(data?.saved ?? false);
         return toast({
           title: `Question ${data?.saved ? "saved" : "removed"} successfully`,
         });
@@ -47,8 +55,6 @@ const SaveQuestion = ({ questionId }: { questionId: string }) => {
       setIsLoading(false);
     }
   };
-
-  // const hasSaved = false;
 
   return (
     <Image

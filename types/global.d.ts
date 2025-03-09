@@ -61,3 +61,9 @@ interface Answer {
   downvotes: number;
   createdAt: Date;
 }
+
+interface Collection {
+  _id: string;
+  author: string | Author;
+  question: Question
+}
