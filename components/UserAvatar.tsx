@@ -23,6 +23,7 @@ const UserAvatar = ({
   className = "h-9 w-9",
   fallbackClassName,
 }: UserAvatarProps) => {
+  
   const initials = name?.split(" ")
     .map((word: string) => word[0])
     .join("")
@@ -31,12 +32,11 @@ const UserAvatar = ({
 
   return (
     <Link href={ROUTES.PROFILE(id)}>
-      <Avatar className={className}>
+      <Avatar className={cn('relative', className)}>
         {imageUrl ? (
           <Image
             src={imageUrl}
-            width={36}
-            height={36}
+            fill
             quality={100}
             alt={name || "Anonymous"}
             className="object-cover"
