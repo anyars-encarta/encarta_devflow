@@ -1,8 +1,9 @@
-
 // import { auth, signOut } from "@/auth";
 import QuestionCard from "@/components/cards/QuestionCard";
 import DataRenderer from "@/components/DataRenderer";
+import CommonFilter from "@/components/filters/CommonFilter";
 import LocalSearch from "@/components/search/LocalSearch";
+import { CollectionFilters } from "@/constants/filters";
 import ROUTES from "@/constants/routes";
 import { EMPTY_QUESTION } from "@/constants/states";
 import { getSavedQuestions } from "@/lib/actions/collection.action";
@@ -77,6 +78,12 @@ const Collection = async ({ searchParams }: SearchParams) => {
           placeholder="Search questions..."
           otherClasses="flex-1"
         />
+
+        <CommonFilter
+          filters={CollectionFilters}
+          otherClasses="min-h-[56px] sm:min-w-[170px]"
+          containerClasses="hidden max-md:flex"
+        />
       </div>
 
       <DataRenderer
@@ -86,10 +93,7 @@ const Collection = async ({ searchParams }: SearchParams) => {
         empty={EMPTY_QUESTION}
         render={(collection) =>
           collection.map((item) => (
-            <div
-              className="mt-10 flex w-full flex-col gap-6"
-              key={item._id}
-            >
+            <div className="mt-10 flex w-full flex-col gap-6" key={item._id}>
               <QuestionCard question={item.question} />
             </div>
           ))
