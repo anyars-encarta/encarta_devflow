@@ -11,6 +11,7 @@ import { EMPTY_QUESTION } from "@/constants/states";
 import { getQuestions } from "@/lib/actions/question.action";
 import CommonFilter from "@/components/filters/CommonFilter";
 import { HomePageFilters } from "@/constants/filters";
+import Pagination from "@/components/Pagination";
 
 // const questions = [
 //   {
@@ -59,7 +60,7 @@ const Home = async ({ searchParams }: SearchParams) => {
     filter: filter || "",
   });
 
-  const { questions } = data || {};
+  const { questions, isNext } = data || {};
   // const filteredQuestions = questions.filter((question) => {
   //   const matchesQuery = question.title
   //     .toLowerCase()
@@ -91,10 +92,10 @@ const Home = async ({ searchParams }: SearchParams) => {
           otherClasses="flex-1"
         />
 
-        <CommonFilter 
+        <CommonFilter
           filters={HomePageFilters}
-          otherClasses='min-h-[56px] sm:min-w-[170px]'
-          containerClasses='hidden max-md:flex'
+          otherClasses="min-h-[56px] sm:min-w-[170px]"
+          containerClasses="hidden max-md:flex"
         />
       </section>
 
@@ -105,17 +106,16 @@ const Home = async ({ searchParams }: SearchParams) => {
         error={error}
         data={questions}
         empty={EMPTY_QUESTION}
-        render={(questions) =>
-          questions.map((question) => (
-            <div
-              className="mt-10 flex w-full flex-col gap-6"
-              key={question._id}
-            >
-              <QuestionCard question={question} />
-            </div>
-          ))
-        }
+        render={(questions) => (
+          <div className="mt-10 flex w-full flex-col gap-6">
+            {questions.map((question, i) => (
+              <QuestionCard key={i} question={question} />
+            ))}
+          </div>
+        )}
       />
+
+      <Pagination page={page} isNext={isNext || false} />
     </>
   );
 };

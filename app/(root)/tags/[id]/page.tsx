@@ -9,6 +9,7 @@ import { getTagQuestions } from "@/lib/actions/tag.action";
 import { RouteParams } from "@/types/global";
 import CommonFilter from "@/components/filters/CommonFilter";
 import { TagFilters } from "@/constants/filters";
+import Pagination from "@/components/Pagination";
 
 const Tag = async ({ params, searchParams }: RouteParams) => {
   const { id } = await params;
@@ -22,7 +23,7 @@ const Tag = async ({ params, searchParams }: RouteParams) => {
     filter,
   });
 
-  const { tag, questions } = data || {};
+  const { tag, questions, isNext } = data || {};
 
   return (
     <>
@@ -61,6 +62,8 @@ const Tag = async ({ params, searchParams }: RouteParams) => {
           ))
         }
       />
+
+      <Pagination page={page} isNext={isNext || false} />
     </>
   );
 };
