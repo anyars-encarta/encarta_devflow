@@ -23,6 +23,7 @@ import {
   IncrementViewsSchema,
   PaginatedSearchParamsSchema,
 } from "../validations";
+import dbConnect from "../mongoose";
 
 export async function createQuestion(
   params: CreateQuestionParams
@@ -320,5 +321,22 @@ export async function incrementViews(
     return { success: true, data: { views: question.views } };
   } catch (e) {
     return handleError(e) as ErrorResponse;
+  }
+}
+
+export async function getHotQuestions(): Promise<ActionResponse<typeof Question[]>> {
+  try {
+    await dbConnect();
+
+    const questions = await Question.find()
+      .sort({ views: -1, upvotes: -1 })
+      .limit(5)
+      
+      return {
+        success: true,
+        data: JSON.parse(JSON.stringify(questions)),
+      }
+  } catch (e) {
+    return handleError(e) as ErrorResponse
   }
 }
