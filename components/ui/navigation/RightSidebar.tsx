@@ -3,13 +3,19 @@ import DataRenderer from "@/components/DataRenderer";
 import { popularTags } from "@/constants";
 import ROUTES from "@/constants/routes";
 import { getHotQuestions } from "@/lib/actions/question.action";
+import { getTopTags } from "@/lib/actions/tag.action";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
 const RightSidebar = async () => {
   const { success, data: hotQuestions, error } = await getHotQuestions();
-console.log("Hot Questions: ", hotQuestions);
+  const {
+    success: tagSuccess,
+    data: tags,
+    error: tagError,
+  } = await getTopTags();
+
   return (
     <section className="pt-36 custom-scrollbar background-light900_dark200 light-border sticky right-0 top-0 flex h-screen w-[350px] flex-col gap-6 overflow-y-auto border-l p-6 shadow-light-300 dark:shadow-none max-xl:hidden">
       <div>
@@ -44,7 +50,9 @@ console.log("Hot Questions: ", hotQuestions);
                       className="invert-colors"
                     />
 
-                    <p className="body-medium text-dark500_light700 line-clamp-2">{title}</p>
+                    <p className="body-medium text-dark500_light700 line-clamp-2">
+                      {title}
+                    </p>
                   </div>
 
                   <Image
@@ -61,22 +69,33 @@ console.log("Hot Questions: ", hotQuestions);
         />
       </div>
 
-      {/* <div className="mt-16">
+      <div className="mt-16">
         <h3 className="h3-bold text-dark200_light900">Popular Tags</h3>
 
-        <div className="mt-7 flex flex-col gap 4">
-          {popularTags.map(({ _id, name, questions }) => (
-            <TagCard
-              key={_id}
-              _id={_id}
-              name={name}
-              questions={questions}
-              showCount
-              compact
-            />
-          ))}
-        </div>
-      </div> */}
+        <DataRenderer
+          data={tags}
+          empty={{
+            title: "No tags found",
+            message: "No tags found. Please check back later.",
+          }}
+          success={tagSuccess}
+          error={tagError}
+          render={(tags) => (
+            <div className="mt-7 flex flex-col gap 4">
+              {tags.map(({ _id, name, questions }) => (
+                <TagCard
+                  key={_id}
+                  _id={_id}
+                  name={name}
+                  questions={questions}
+                  showCount
+                  compact
+                />
+              ))}
+            </div>
+          )}
+        />
+      </div>
     </section>
   );
 };

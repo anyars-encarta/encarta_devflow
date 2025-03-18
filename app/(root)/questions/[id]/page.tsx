@@ -124,6 +124,8 @@ const QuestionDetails = async ({ params, searchParams }: RouteParams) => {
 
   const { author, createdAt, answers, views, tags, content, title } = question;
 
+  console.log("Author: ", author);
+
   return (
     <>
       {/* <View questionId={id} />  First approach for incrementing views */}
