@@ -69,7 +69,7 @@ interface Collection {
   question: Question
 }
 
-interface User {
+interface UserParams {
   _id: string;
   name: string;
   username: string;
@@ -78,5 +78,6 @@ interface User {
   image?: string;
   location?: string;
   portfolio?: string;
-  reputation: number;
+  reputation?: number;
+  createdAt: Date;
 }
