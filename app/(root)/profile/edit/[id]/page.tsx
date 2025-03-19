@@ -1,8 +1,11 @@
-import React from 'react'
+import { RouteParams } from '@/types/global'
 
-const EditProfile = () => {
+const EditProfile = async ({ params}: RouteParams) => {
+
+  const { id } = await params;
+
   return (
-    <div>EditProfile</div>
+    <div>Edit Profile: {id}</div>
   )
 }
 
