@@ -65,6 +65,10 @@ interface CollectionBaseParams {
   questionId: string;
 }
 
-interface getUserParams {
+interface GetUserParams {
+  userId: string;
+}
+
+interface GetUserQuestionsParams extends Omit<PaginatedSearchParams, "query" | "filter" | "sort"> {
   userId: string;
 }

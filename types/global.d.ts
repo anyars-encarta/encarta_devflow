@@ -12,7 +12,7 @@ interface Author {
   image: string;
 }
 
-interface Question {
+interface QuestionParams {
   _id: string;
   title: string;
   content: string;
@@ -54,7 +54,7 @@ interface PaginatedSearchParams {
   sort?: string;
 }
 
-interface Answer {
+interface AnswerParams {
   _id: string;
   author: Author;
   content: string;
@@ -63,7 +63,7 @@ interface Answer {
   createdAt: Date;
 }
 
-interface Collection {
+interface CollectionParams {
   _id: string;
   author: string | Author;
   question: Question

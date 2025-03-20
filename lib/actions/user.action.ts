@@ -2,22 +2,23 @@
 
 import { FilterQuery } from "mongoose";
 
+import { User, Question, Answer } from "@/database";
+import { GetUserParams, GetUserQuestionsParams } from "@/types/action";
 import {
   ActionResponse,
   ErrorResponse,
   PaginatedSearchParams,
+  QuestionParams,
   UserParams,
 } from "@/types/global";
 
 import action from "../handlers/action";
 import handleError from "../handlers/error";
-import { GetUserSchema, PaginatedSearchParamsSchema } from "../validations";
-import { getUserParams } from "@/types/action";
-import { User, Question, Answer } from "@/database";
+import { GetUserQuestionsSchema, GetUserSchema, PaginatedSearchParamsSchema } from "../validations";
 
 export async function getUsers(
   params: PaginatedSearchParams
-): Promise<ActionResponse<{ users: typeof User[]; isNext: boolean }>> {
+): Promise<ActionResponse<{ users: (typeof User)[]; isNext: boolean }>> {
   const validationResult = await action({
     params,
     schema: PaginatedSearchParamsSchema,
@@ -67,23 +68,25 @@ export async function getUsers(
 
     const isNext = totalUsers > skip + users.length;
 
-    return { 
-        success: true, 
-        data: { 
-            users: JSON.parse(JSON.stringify(users)), 
-            isNext 
-        } 
+    return {
+      success: true,
+      data: {
+        users: JSON.parse(JSON.stringify(users)),
+        isNext,
+      },
     };
   } catch (e) {
     return handleError(e) as ErrorResponse;
   }
 }
 
-export async function getUser(params: getUserParams): Promise<ActionResponse<{
-  user: UserParams;
-  totalQuestions: number;
-  totalAnswers: number;
-}>> {
+export async function getUser(params: GetUserParams): Promise<
+  ActionResponse<{
+    user: UserParams;
+    totalQuestions: number;
+    totalAnswers: number;
+  }>
+> {
   const validationResult = await action({
     params,
     schema: GetUserSchema,
@@ -110,6 +113,48 @@ export async function getUser(params: getUserParams): Promise<ActionResponse<{
         user: JSON.parse(JSON.stringify(user)),
         totalQuestions,
         totalAnswers,
+      },
+    };
+  } catch (e) {
+    return handleError(e) as ErrorResponse;
+  }
+}
+
+export async function getUserQuestions(params: GetUserQuestionsParams): Promise<
+  ActionResponse<{
+    questions: QuestionParams[];
+    isNext: boolean;
+  }>
+> {
+  const validationResult = await action({
+    params,
+    schema: GetUserQuestionsSchema,
+  });
+
+  if (validationResult instanceof Error) {
+    return handleError(validationResult) as ErrorResponse;
+  }
+
+  const { userId, page = 1, pageSize = 10 } = params;
+  const skip = (Number(page) - 1) * pageSize;
+  const limit = pageSize;
+
+  try {
+    const totalQuestions = await Question.countDocuments({ author: userId });
+
+    const questions = await Question.find({ author: userId})
+    .populate("tags", "name")
+    .populate("author", "name image")
+    .skip(skip)
+    .limit(limit);
+
+    const isNext = totalQuestions > skip + questions.length;
+
+    return {
+      success: true,
+      data: {
+        questions: JSON.parse(JSON.stringify(questions)),
+        isNext,
       },
     };
   } catch (e) {

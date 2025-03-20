@@ -7,15 +7,22 @@ import mongoose, { FilterQuery } from "mongoose";
 import Question, { IQuestionDoc } from "@/database/question.model";
 import TagQuestion from "@/database/tag-question.model";
 import Tag, { ITagDoc } from "@/database/tag.model";
-import { CreateQuestionParams, EditQuestionParams, GetQuestionParams, IncrementViewsParams } from "@/types/action";
+import {
+  CreateQuestionParams,
+  EditQuestionParams,
+  GetQuestionParams,
+  IncrementViewsParams,
+} from "@/types/action";
 import {
   ActionResponse,
   ErrorResponse,
   PaginatedSearchParams,
+  QuestionParams,
 } from "@/types/global";
 
 import action from "../handlers/action";
 import handleError from "../handlers/error";
+import dbConnect from "../mongoose";
 import {
   AskQuestionSchema,
   EditQuestionSchema,
@@ -23,7 +30,6 @@ import {
   IncrementViewsSchema,
   PaginatedSearchParamsSchema,
 } from "../validations";
-import dbConnect from "../mongoose";
 
 export async function createQuestion(
   params: CreateQuestionParams
@@ -214,7 +220,9 @@ export async function getQuestion(
   const { questionId } = validationResult.params!;
 
   try {
-    const question = await Question.findById(questionId).populate("tags").populate("author", "_id name image");
+    const question = await Question.findById(questionId)
+      .populate("tags")
+      .populate("author", "_id name image");
 
     if (!question) {
       throw new Error("Question not found");
@@ -324,19 +332,21 @@ export async function incrementViews(
   }
 }
 
-export async function getHotQuestions(): Promise<ActionResponse<typeof Question[]>> {
+export async function getHotQuestions(): Promise<
+  ActionResponse<QuestionParams[]>
+> {
   try {
     await dbConnect();
 
     const questions = await Question.find()
       .sort({ views: -1, upvotes: -1 })
-      .limit(5)
-      
-      return {
-        success: true,
-        data: JSON.parse(JSON.stringify(questions)),
-      }
+      .limit(5);
+
+    return {
+      success: true,
+      data: JSON.parse(JSON.stringify(questions)),
+    };
   } catch (e) {
-    return handleError(e) as ErrorResponse
+    return handleError(e) as ErrorResponse;
   }
 }
