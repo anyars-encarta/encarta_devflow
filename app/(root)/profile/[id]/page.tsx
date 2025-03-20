@@ -86,14 +86,14 @@ const Profile = async ({ params }: RouteParams) => {
         </div>
       </section>
 
-      <Stats 
-      totalQuestions={totalQuestions} 
-      totalAnswers={totalAnswers} 
-      badges={{
-        gold: 0,
-        silver: 0,
-        bronze: 0,
-      }}
+      <Stats
+        totalQuestions={totalQuestions}
+        totalAnswers={totalAnswers}
+        badges={{
+          gold: 0,
+          silver: 0,
+          bronze: 0,
+        }}
       />
     </>
   );
