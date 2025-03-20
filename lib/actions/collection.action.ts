@@ -8,6 +8,7 @@ import { Collection, Question } from "@/database";
 import { CollectionBaseParams } from "@/types/action";
 import {
   ActionResponse,
+  CollectionParams,
   ErrorResponse,
   PaginatedSearchParams,
 } from "@/types/global";
@@ -111,7 +112,7 @@ export async function hasSavedQuestion(
 
 export async function getSavedQuestions(
   params: PaginatedSearchParams
-): Promise<ActionResponse<{ collection: Collection[]; isNext: boolean }>> {
+): Promise<ActionResponse<{ collection: CollectionParams[]; isNext: boolean }>> {
   const validationResult = await action({
     params,
     schema: PaginatedSearchParamsSchema,
