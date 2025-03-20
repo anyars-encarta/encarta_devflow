@@ -81,3 +81,9 @@ interface UserParams {
   reputation?: number;
   createdAt: Date;
 }
+
+interface BadgeCounts {
+  gold: number;
+  silver: number;
+  bronze: number;
+}
