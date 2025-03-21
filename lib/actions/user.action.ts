@@ -3,9 +3,10 @@
 import { FilterQuery } from "mongoose";
 
 import { User, Question, Answer } from "@/database";
-import { GetUserParams, GetUserQuestionsParams } from "@/types/action";
+import { GetUserAnswersParams, GetUserParams, GetUserQuestionsParams } from "@/types/action";
 import {
   ActionResponse,
+  AnswerParams,
   ErrorResponse,
   PaginatedSearchParams,
   QuestionParams,
@@ -14,7 +15,7 @@ import {
 
 import action from "../handlers/action";
 import handleError from "../handlers/error";
-import { GetUserQuestionsSchema, GetUserSchema, PaginatedSearchParamsSchema } from "../validations";
+import { GetUserAnswersSchema, GetUserQuestionsSchema, GetUserSchema, PaginatedSearchParamsSchema } from "../validations";
 
 export async function getUsers(
   params: PaginatedSearchParams
@@ -154,6 +155,47 @@ export async function getUserQuestions(params: GetUserQuestionsParams): Promise<
       success: true,
       data: {
         questions: JSON.parse(JSON.stringify(questions)),
+        isNext,
+      },
+    };
+  } catch (e) {
+    return handleError(e) as ErrorResponse;
+  }
+}
+
+export async function getUserAnswers(params: GetUserAnswersParams): Promise<
+  ActionResponse<{
+    answers: AnswerParams[];
+    isNext: boolean;
+  }>
+> {
+  const validationResult = await action({
+    params,
+    schema: GetUserAnswersSchema,
+  });
+
+  if (validationResult instanceof Error) {
+    return handleError(validationResult) as ErrorResponse;
+  }
+
+  const { userId, page = 1, pageSize = 10 } = params;
+  const skip = (Number(page) - 1) * pageSize;
+  const limit = pageSize;
+
+  try {
+    const totalAnswers = await Answer.countDocuments({ author: userId });
+
+    const answers = await Answer.find({ author: userId})
+    .populate("author", "_id name image")
+    .skip(skip)
+    .limit(limit);
+
+    const isNext = totalAnswers > skip + answers.length;
+
+    return {
+      success: true,
+      data: {
+        answers: JSON.parse(JSON.stringify(answers)),
         isNext,
       },
     };
