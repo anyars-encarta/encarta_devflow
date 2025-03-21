@@ -1,9 +1,14 @@
 "use server";
 
-import { FilterQuery } from "mongoose";
+import { FilterQuery, PipelineStage, Types } from "mongoose";
 
 import { User, Question, Answer } from "@/database";
-import { GetUserAnswersParams, GetUserParams, GetUserQuestionsParams } from "@/types/action";
+import {
+  GetUserAnswersParams,
+  GetUserParams,
+  GetUserQuestionsParams,
+  GetUserTagsParams,
+} from "@/types/action";
 import {
   ActionResponse,
   AnswerParams,
@@ -15,7 +20,13 @@ import {
 
 import action from "../handlers/action";
 import handleError from "../handlers/error";
-import { GetUserAnswersSchema, GetUserQuestionsSchema, GetUserSchema, PaginatedSearchParamsSchema } from "../validations";
+import {
+  GetUserAnswersSchema,
+  GetUserQuestionsSchema,
+  GetUserSchema,
+  GetUserTagsSchema,
+  PaginatedSearchParamsSchema,
+} from "../validations";
 
 export async function getUsers(
   params: PaginatedSearchParams
@@ -143,11 +154,11 @@ export async function getUserQuestions(params: GetUserQuestionsParams): Promise<
   try {
     const totalQuestions = await Question.countDocuments({ author: userId });
 
-    const questions = await Question.find({ author: userId})
-    .populate("tags", "name")
-    .populate("author", "name image")
-    .skip(skip)
-    .limit(limit);
+    const questions = await Question.find({ author: userId })
+      .populate("tags", "name")
+      .populate("author", "name image")
+      .skip(skip)
+      .limit(limit);
 
     const isNext = totalQuestions > skip + questions.length;
 
@@ -185,10 +196,10 @@ export async function getUserAnswers(params: GetUserAnswersParams): Promise<
   try {
     const totalAnswers = await Answer.countDocuments({ author: userId });
 
-    const answers = await Answer.find({ author: userId})
-    .populate("author", "_id name image")
-    .skip(skip)
-    .limit(limit);
+    const answers = await Answer.find({ author: userId })
+      .populate("author", "_id name image")
+      .skip(skip)
+      .limit(limit);
 
     const isNext = totalAnswers > skip + answers.length;
 
@@ -199,6 +210,60 @@ export async function getUserAnswers(params: GetUserAnswersParams): Promise<
         isNext,
       },
     };
+  } catch (e) {
+    return handleError(e) as ErrorResponse;
+  }
+}
+
+export async function getUserTopTags(params: GetUserTagsParams): Promise<
+  ActionResponse<{
+    tags: { _id: string; name: string; count: number }[];
+  }>
+> {
+  const validationResult = await action({
+    params,
+    schema: GetUserTagsSchema,
+  });
+
+  if (validationResult instanceof Error) {
+    return handleError(validationResult) as ErrorResponse;
+  }
+
+  const { userId } = params;
+
+  try {
+    const pipline: PipelineStage[] = [
+      { $match: { author: new Types.ObjectId(userId) } },
+      { $unwind: "$tags" },
+      { $group: { _id: "$tags", count: { $sum: 1 } } },
+      {
+        $lookup: {
+          from: "tags",
+          localField: "_id",
+          foreignField: "_id",
+          as: "tagInfo",
+        },
+      },
+      { $unwind: "$tagInfo" },
+      { $sort: { count: -1 } },
+      { $limit: 10 },
+      {
+        $project: {
+          _id: "$tagInfo._id",
+          name: "$tagInfo.name",
+          count: 1,
+        },
+      },
+    ];
+
+    const tags = await Question.aggregate(pipline);
+
+    return {
+      success: true,
+      data: {
+        tags: JSON.parse(JSON.stringify(tags)),
+      },
+    }
   } catch (e) {
     return handleError(e) as ErrorResponse;
   }
