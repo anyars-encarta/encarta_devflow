@@ -1,4 +1,4 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app). DevFlow is a platform for software engineers, software developers, IT enthusiasts.
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app). DevFlow is a platform for software engineers, software developers, IT enthusiasts. IT enthusiasts.
 
 ## Getting Started
 
